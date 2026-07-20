@@ -23,12 +23,14 @@ const MemoryVault = ({ onNext }) => (
         <motion.div
           key={photo.id}
           initial={{ opacity: 0, y: 40, rotate: (i % 2 === 0 ? -2 : 2) }}
-          animate={{ opacity: 1, y: 0, rotate: (i % 2 === 0 ? -2 : 2) }}
-          transition={{ delay: i * 0.2 }}
-          whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
+          animate={{ opacity: 1, y: [0, -6, 0], rotate: [(i % 2 === 0 ? -2 : 2), (i % 2 === 0 ? -0.5 : 0.5), (i % 2 === 0 ? -2 : 2)] }}
+          transition={{ delay: i * 0.2, duration: 5 + i, repeat: Infinity, ease: 'easeInOut' }}
+          whileHover={{ scale: 1.06, rotate: 0, zIndex: 10, boxShadow: '0 0 35px rgba(255,215,0,0.35)' }}
           className="relative group"
         >
-          <div className="bg-white p-1 sm:p-1.5 pb-6 sm:pb-8 rounded shadow-xl shadow-gold/5 relative overflow-hidden">
+          <div className="bg-gradient-to-b from-amber-50 to-amber-100 p-1 sm:p-1.5 pb-6 sm:pb-8 rounded shadow-xl shadow-black/30 relative overflow-hidden border border-amber-200/80">
+            <div className="absolute -top-2 left-6 w-7 h-3 rounded-sm bg-amber-100/90 rotate-[-8deg]" />
+            <div className="absolute -top-2 right-6 w-7 h-3 rounded-sm bg-amber-100/90 rotate-[8deg]" />
             <img
               src={`/images/${photo.id}.jpeg`}
               alt=""

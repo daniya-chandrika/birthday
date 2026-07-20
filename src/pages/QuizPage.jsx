@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import GoldButton from '../components/GoldButton'
+import { playCelebrateSound } from '../utils/sound'
 
 const options = ['Festival', 'Relatives Home', 'Shopping', 'Movie']
 const correctAnswer = 'Movie'
@@ -11,7 +12,10 @@ const QuizPage = ({ onNext }) => {
 
   const handleSelect = (opt) => {
     setSelected(opt)
-    if (opt === correctAnswer) setCorrect(true)
+    if (opt === correctAnswer) {
+      playCelebrateSound()
+      setCorrect(true)
+    }
   }
 
   return (
@@ -61,7 +65,7 @@ const QuizPage = ({ onNext }) => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <p className="text-3xl mb-3">😊🫠</p>
+              <motion.p className="text-3xl mb-3" initial={{ scale: 0.4, y: 12 }} animate={{ scale: 1, y: 0 }} transition={{ type: 'spring' }}>😊🫠</motion.p>
               <p className="text-base sm:text-lg font-serif gold-text mb-2">Glad you really remember our memories.</p>
               <p className="text-white/50 text-sm mb-6">Those moments mean everything.</p>
               <GoldButton onClick={onNext}>Continue</GoldButton>

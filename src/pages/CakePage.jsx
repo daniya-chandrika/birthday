@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import GoldButton from '../components/GoldButton'
+import { playCelebrateSound } from '../utils/sound'
 
 const images = [2, 3, 4, 5, 6, 7]
 
@@ -41,12 +42,15 @@ const CakePage = ({ onNext }) => {
             />
             {i === cakePosition.imageIndex && !found && (
               <button
-                onClick={() => setFound(true)}
+                onClick={() => {
+                  playCelebrateSound()
+                  setFound(true)
+                }}
                 className="absolute cursor-pointer opacity-60 hover:opacity-100 transition-opacity text-lg"
                 style={{ top: `${cakePosition.top}%`, left: `${cakePosition.left}%` }}
                 aria-label="Birthday cake"
               >
-                🎂
+                <motion.span animate={{ y: [0, -5, 0] }} transition={{ duration: 1.2, repeat: Infinity }}>🎂</motion.span>
               </button>
             )}
           </motion.div>

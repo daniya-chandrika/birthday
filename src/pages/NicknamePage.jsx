@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import GoldButton from '../components/GoldButton'
+import { playUnlockSound, playCelebrateSound } from '../utils/sound'
 
 const hints = [
   "The name Mavayya always used to call you...",
@@ -15,6 +16,8 @@ const NicknamePage = ({ onNext }) => {
 
   const check = () => {
     if (input.trim().toLowerCase() === 'tinku') {
+      playUnlockSound()
+      setTimeout(playCelebrateSound, 80)
       setSolved(true)
     } else {
       setAttempts(a => a + 1)
@@ -28,7 +31,7 @@ const NicknamePage = ({ onNext }) => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="glass p-5 sm:p-8 md:p-12 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+        className={`glass p-5 sm:p-8 md:p-12 max-w-lg w-full max-h-[90vh] overflow-y-auto ${solved ? 'shadow-[0_0_55px_rgba(255,215,0,0.35)]' : ''}`}
       >
         <motion.img
           src="/images/1.jpeg"
@@ -77,7 +80,7 @@ const NicknamePage = ({ onNext }) => {
               transition={{ type: 'spring' }}
               className="text-center"
             >
-              <p className="text-3xl sm:text-4xl mb-4">🎉✨</p>
+              <motion.p className="text-3xl sm:text-4xl mb-4" initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>🎉✨</motion.p>
               <p className="text-lg sm:text-xl font-serif gold-text mb-2">That's right!</p>
               <p className="text-white/60 text-sm mb-6">A beautiful memory unlocked.</p>
               <GoldButton onClick={onNext}>Continue</GoldButton>

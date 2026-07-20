@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Confetti from 'react-confetti'
 
-const message = `Happy 19th Birthday ❤️
+const birthdayMessage = `Happy 19th Birthday ❤️
 
 Congratulations on completing nineteen wonderful years of your journey.
 
@@ -16,14 +16,16 @@ Happy Birthday once again.`
 
 const FinalPage = () => {
   const [displayedText, setDisplayedText] = useState('')
+  const [thankYouText, setThankYouText] = useState('')
+  const [hopeText, setHopeText] = useState('')
   const [showConfetti, setShowConfetti] = useState(true)
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight })
 
   useEffect(() => {
     let i = 0
     const interval = setInterval(() => {
-      if (i <= message.length) {
-        setDisplayedText(message.slice(0, i))
+      if (i <= birthdayMessage.length) {
+        setDisplayedText(birthdayMessage.slice(0, i))
         i++
       } else {
         clearInterval(interval)
@@ -33,7 +35,32 @@ const FinalPage = () => {
   }, [])
 
   useEffect(() => {
-    const t = setTimeout(() => setShowConfetti(false), 8000)
+    const line1 = 'Thank you for taking this little journey.'
+    const line2 = 'I hope today becomes another beautiful memory.'
+    const t1 = setTimeout(() => {
+      let i = 0
+      const timer = setInterval(() => {
+        if (i <= line1.length) setThankYouText(line1.slice(0, i++))
+        else clearInterval(timer)
+      }, 42)
+    }, 1800)
+
+    const t2 = setTimeout(() => {
+      let i = 0
+      const timer = setInterval(() => {
+        if (i <= line2.length) setHopeText(line2.slice(0, i++))
+        else clearInterval(timer)
+      }, 42)
+    }, 4700)
+
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
+    }
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowConfetti(false), 9000)
     return () => clearTimeout(t)
   }, [])
 
@@ -69,6 +96,11 @@ const FinalPage = () => {
         >
           Happy Birthday!
         </motion.h1>
+
+        <div className="mb-4 sm:mb-6 text-gold/80 font-serif min-h-[52px]">
+          <p className="text-sm sm:text-base">{thankYouText}</p>
+          <p className="text-sm sm:text-base">{hopeText}</p>
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}

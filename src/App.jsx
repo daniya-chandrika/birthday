@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import Particles from './components/Particles'
+import CinematicBackground from './components/CinematicBackground'
 import PageTransition from './components/PageTransition'
-import ChapterIndicator from './components/ChapterIndicator'
 import MusicToggle from './components/MusicToggle'
 import LoadingScreen from './components/LoadingScreen'
+import MemoryUnlockTransition from './components/MemoryUnlockTransition'
 import IntroPage from './pages/IntroPage'
 import NicknamePage from './pages/NicknamePage'
 import CakePage from './pages/CakePage'
@@ -13,15 +14,18 @@ import QuizPage from './pages/QuizPage'
 import MemoryVault from './pages/MemoryVault'
 import AchievementPage from './pages/AchievementPage'
 import VideoPage from './pages/VideoPage'
+import EmotionalTransitionPage from './pages/EmotionalTransitionPage'
 import FinalPage from './pages/FinalPage'
+import { playUnlockSound } from './utils/sound'
 
-const TOTAL_PAGES = 9
+const TOTAL_PAGES = 10
 
 const App = () => {
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState(0)
   const [page, setPage] = useState(0)
   const [musicPlaying, setMusicPlaying] = useState(false)
+  const [isUnlocking, setIsUnlocking] = useState(false)
   const [audio] = useState(() => {
     if (typeof window !== 'undefined') {
       const a = new Audio('/music/background.mpeg')
@@ -62,9 +66,17 @@ const App = () => {
   }, [audio, musicPlaying])
 
   const nextPage = useCallback(() => {
+    if (isUnlocking) return
     if (!musicPlaying) startMusic()
-    setPage(p => Math.min(p + 1, TOTAL_PAGES - 1))
-  }, [musicPlaying, startMusic])
+    if (page >= TOTAL_PAGES - 1) return
+
+    setIsUnlocking(true)
+    playUnlockSound()
+    setTimeout(() => {
+      setPage(p => Math.min(p + 1, TOTAL_PAGES - 1))
+      setIsUnlocking(false)
+    }, 850)
+  }, [musicPlaying, startMusic, isUnlocking, page])
 
   const pages = [
     <IntroPage onNext={nextPage} />,
@@ -75,11 +87,13 @@ const App = () => {
     <MemoryVault onNext={nextPage} />,
     <AchievementPage onNext={nextPage} />,
     <VideoPage onNext={nextPage} />,
+    <EmotionalTransitionPage onComplete={nextPage} />,
     <FinalPage />,
   ]
 
   return (
     <div className="w-full h-full bg-[#090909] relative overflow-hidden max-w-[100vw]">
+      <CinematicBackground />
       <Particles count={60} />
 
       <AnimatePresence>
@@ -88,8 +102,8 @@ const App = () => {
 
       {!loading && (
         <>
-
           <MusicToggle playing={musicPlaying} onToggle={toggleMusic} />
+          <MemoryUnlockTransition visible={isUnlocking} />
 
           <PageTransition pageKey={page}>
             {pages[page]}
